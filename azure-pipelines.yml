@@ -170,7 +170,7 @@ stages:
               and
               (
                 succeeded(), 
-                eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted'])
+                eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted']),
                 eq(variables['imageName'], 'ubuntu-latest')
               )
             
@@ -182,6 +182,6 @@ stages:
               and
               (
                 succeeded(), 
-                eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted'])
+                eq(variables['Build.SourceBranchName'], variables['packageVersionFormatted']),
                 eq(variables['imageName'], 'windows-latest')
               )
