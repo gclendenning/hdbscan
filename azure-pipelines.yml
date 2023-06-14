@@ -162,9 +162,9 @@ stages:
           # Upload seperate artifacts for windows and Linux/macOS
           - script: |
               pip install twine
-              twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) dist/*.tar.gz
+              # twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) dist/*.tar.gz
               auditwheel repair dist/*linux_x86_64.whl
-              twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) wheelhouse/*.whl
+              # twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) wheelhouse/*.whl
             displayName: 'Upload to PyPI - Linux/macOS'
             condition: |
               and
@@ -176,7 +176,7 @@ stages:
             
           - script: |
               pip install twine
-              twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) dist/* 
+              # twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) dist/* 
             displayName: 'Upload to PyPI - Windows'
             condition: |
               and
