@@ -74,6 +74,10 @@ stages:
           displayName: 'Use Python $(python.version)'
 
         - script: |
+            exit 1
+          displayName: 'Test failure'
+
+        - script: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
           displayName: 'Install dependencies'
@@ -102,9 +106,12 @@ stages:
             testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
           condition: succeededOrFailed()
 
+
+        
+
   - stage: BuildPublishArtifact
     dependsOn: RunAllTests
-    condition: and(startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/release-'), eq(variables.triggeredByPullRequest, false))
     jobs:
       - job: BuildArtifacts
         displayName: Build source dists and wheels  
@@ -176,7 +183,7 @@ stages:
             
           - script: |
               pip install twine
-              # twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) dist/* 
+            # twine upload --repository pypi --config-file $(PYPIRC_CONFIG.secureFilePath) dist/* 
             displayName: 'Upload to PyPI - Windows'
             condition: |
               and
