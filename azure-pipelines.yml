@@ -74,10 +74,6 @@ stages:
           displayName: 'Use Python $(python.version)'
 
         - script: |
-            exit 1
-          displayName: 'Test failure'
-
-        - script: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
           displayName: 'Install dependencies'
