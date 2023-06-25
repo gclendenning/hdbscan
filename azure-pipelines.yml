@@ -25,7 +25,7 @@ stages:
               python -m pip install --upgrade pip
               pip install wheel
               pip install -r requirements.txt
-              pip install auditwheel
+              pip install auditwheel auditwheel-symbols
             displayName: 'Install dependencies'
 
           - script: |
@@ -38,6 +38,6 @@ stages:
 
           # Upload seperate artifacts for windows and Linux/macOS
           - script: |
-              pip install twine
+              auditwheel-symbols --manylinux 2_5 dist/*linux_x86_64.whl
               auditwheel --verbose repair dist/*linux_x86_64.whl
             displayName: 'Upload to PyPI - Linux/macOS'
