@@ -39,5 +39,5 @@ stages:
           # Upload seperate artifacts for windows and Linux/macOS
           - script: |
               pip install twine
-              auditwheel repair dist/*linux_x86_64.whl
+              auditwheel --verbose repair dist/*linux_x86_64.whl
             displayName: 'Upload to PyPI - Linux/macOS'
