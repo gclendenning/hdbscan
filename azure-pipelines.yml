@@ -41,8 +41,3 @@ stages:
               pip install twine
               auditwheel repair dist/*linux_x86_64.whl
             displayName: 'Upload to PyPI - Linux/macOS'
-            condition: |
-              and
-              (
-                succeeded(), 
-              )
