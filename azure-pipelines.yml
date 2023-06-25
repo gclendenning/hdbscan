@@ -39,5 +39,5 @@ stages:
           # Upload seperate artifacts for windows and Linux/macOS
           - script: |
               auditwheel-symbols --manylinux 2_5 dist/*linux_x86_64.whl
-              auditwheel --verbose repair --plat manylinux2014 dist/*linux_x86_64.whl
+              auditwheel --verbose repair --plat manylinux_2_17_x86_64 dist/*linux_x86_64.whl
             displayName: 'Upload to PyPI - Linux/macOS'
