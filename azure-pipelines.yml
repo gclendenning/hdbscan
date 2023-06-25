@@ -4,40 +4,77 @@ variables:
 stages:
   - stage: BuildPublishArtifact
     jobs:
-      - job: BuildArtifacts
-        displayName: Build source dists and wheels  
+      # - job: BuildArtifacts
+      #   displayName: Build source dists and wheels  
+      #   strategy:
+      #     matrix:
+      #       linux_py310:
+      #         imageName: 'ubuntu-latest'
+      #         python.version: '3.10'
+
+      #   pool:
+      #       vmImage: $(imageName)
+
+      #   steps:
+      #     - task: UsePythonVersion@0
+      #       inputs:
+      #         versionSpec: '$(python.version)'
+      #       displayName: 'Use Python $(python.version)'
+
+      #     - script: |
+      #         python -m pip install --upgrade pip
+      #         pip install wheel
+      #         pip install -r requirements.txt
+      #         pip install auditwheel auditwheel-symbols
+      #       displayName: 'Install dependencies'
+
+      #     - script: |
+      #         pip install -e .
+      #       displayName: 'Install package locally'
+          
+      #     - script: |
+      #         python setup.py sdist bdist_wheel
+      #       displayName: 'Build package'
+
+      #     # Upload seperate artifacts for windows and Linux/macOS
+      #     - script: |
+      #         auditwheel-symbols --manylinux 2_5 dist/*linux_x86_64.whl
+      #         auditwheel --verbose repair --plat manylinux_2_17_x86_64 dist/*linux_x86_64.whl
+      #       displayName: 'Upload to PyPI - Linux/macOS'
+
+
+      - job: Manylinux2014Build
+        pool:
+          vmImage: 'ubuntu-latest'
+        container: quay.io/pypa/manylinux2014_x86_64:latest
         strategy:
           matrix:
+            linux_py37:
+              python.version: 'cp37-cp37m'
+            linux_py38:
+              python.version: 'cp38-cp38'
+            linux_py39:
+              python.version: 'cp39-cp39'
             linux_py310:
-              imageName: 'ubuntu-latest'
-              python.version: '3.10'
-
-        pool:
-            vmImage: $(imageName)
-
+              python.version: 'cp310-cp310'
         steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '$(python.version)'
-            displayName: 'Use Python $(python.version)'
-
-          - script: |
-              python -m pip install --upgrade pip
-              pip install wheel
-              pip install -r requirements.txt
-              pip install auditwheel auditwheel-symbols
-            displayName: 'Install dependencies'
-
-          - script: |
-              pip install -e .
-            displayName: 'Install package locally'
-          
-          - script: |
-              python setup.py sdist bdist_wheel
-            displayName: 'Build package'
-
-          # Upload seperate artifacts for windows and Linux/macOS
-          - script: |
-              auditwheel-symbols --manylinux 2_5 dist/*linux_x86_64.whl
-              auditwheel --verbose repair --plat manylinux_2_17_x86_64 dist/*linux_x86_64.whl
-            displayName: 'Upload to PyPI - Linux/macOS'
+        - script: |
+            "${PYBIN}/python" -m pip install --upgrade pip
+            "${PYBIN}/python" -m pip install wheel
+            "${PYBIN}/python" -m pip install -r requirements.txt
+          displayName: 'Install dependencies and build tools'
+          env:
+            PYBIN: /opt/python/$(python.version)/bin
+        - script: |
+            "${PYBIN}/python" setup.py sdist bdist_wheel
+          displayName: 'Build wheels'
+          env:
+            PYBIN: /opt/python/$(python.version)/bin
+        - script: |
+            auditwheel repair dist/*linux_x86_64.whl --plat manylinux2014_x86_64 -w wheelhouse-manylinux/
+          displayName: 'Audit wheels'
+        # - script: |
+        #     "${PYBIN}/python" -m twine upload -r pypi -u $(twineUsername) -p $(twinePassword) --skip-existing --disable-progress-bar wheelhouse-manylinux/*
+        #   displayName: 'Publish wheel to PyPi'
+        #   env:
+        #     PYBIN: /opt/python/$(python.version)/bin
