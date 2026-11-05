@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hdbscan"
-version = "0.8.44"
+version = "0.8.45.dev1"
 description = "Clustering based on density with variable density clusters"
 readme = "README.rst"
 requires-python = ">=3.11"
