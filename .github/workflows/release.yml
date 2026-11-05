@@ -89,6 +89,8 @@ jobs:
       # Same Python versions as run-tests.yml
       CIBW_BUILD: "cp311-* cp312-* cp313-* cp314-* cp315-*"
       CIBW_SKIP: "*-musllinux_*"
+      # 64-bit only: no 32-bit Windows wheels
+      CIBW_ARCHS_WINDOWS: auto64
       CIBW_TEST_COMMAND: "python {project}/hdbscan/tests/smoke_test.py"
     steps:
       - name: Checkout
